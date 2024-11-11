@@ -628,6 +628,79 @@
             z-index: 1000;
             transition: transform 0.3s ease;
         }
+
+        /* 添加移动设备适配样式 */
+        @media screen and (max-width: 768px) {
+            .chat-container {
+                width: 100%;
+                height: 100vh;
+                max-width: none;
+                border-radius: 0;
+                padding: 10px;
+            }
+
+            .chat-header h1 {
+                font-size: 1.4em;
+            }
+
+            .message {
+                max-width: 90%;
+                font-size: 14px;
+            }
+
+            .chat-input {
+                padding: 10px;
+            }
+
+            .chat-input input {
+                padding: 8px;
+            }
+
+            .chat-input button {
+                padding: 8px 16px;
+            }
+
+            /* 在移动设备上隐藏爱心气泡 */
+            .heart-bubble,
+            .heart-bubble-left {
+                display: none;
+            }
+
+            /* 调整消息内容在移动设备上的显示 */
+            .assistant-message h2 {
+                font-size: 1.1em;
+            }
+
+            .welcome-message {
+                font-size: 1em;
+            }
+
+            /* 调整头部间距 */
+            .chat-header {
+                padding: 10px;
+            }
+
+            /* 调整消息区域的内边距 */
+            .chat-messages {
+                padding: 10px;
+            }
+        }
+
+        /* 添加竖屏设备的特殊处理 */
+        @media screen and (max-width: 480px) {
+            .chat-container {
+                padding: 5px;
+            }
+
+            .chat-header h1 {
+                font-size: 1.2em;
+            }
+
+            .svip-tag {
+                font-size: 0.4em;
+                padding: 3px 6px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -818,6 +891,7 @@
             const message = userInput.value.trim();
             
             if (message) {
+                // 立即清空输入框
                 userInput.value = '';
                 
                 // 开始思考时启动爱心跳动
@@ -825,6 +899,8 @@
                 hearts.forEach(heart => heart.style.animationPlayState = 'running');
                 
                 addMessage(message, 'user');
+                
+                // 显示加载状态
                 const loadingMessage = addMessage('正在思考...', 'assistant');
                 
                 try {
@@ -832,7 +908,10 @@
                     const response = await callKimiAPI(message);
                     console.log('收到回复:', response);
                     
+                    // 移除加载消息
                     loadingMessage.remove();
+                    
+                    // 添加 AI 回复
                     addMessage(response, 'assistant');
                 } catch (error) {
                     console.error('发送消息错误:', error);
@@ -843,6 +922,7 @@
                     hearts.forEach(heart => heart.style.animationPlayState = 'paused');
                 }
                 
+                // 让输入框重新获得焦点
                 userInput.focus();
             }
         }
